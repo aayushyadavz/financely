@@ -1,4 +1,5 @@
 import React from "react";
+import "./styles.css";
 
 const Input = ({ label, placeholder, state, setState }) => {
   return (
