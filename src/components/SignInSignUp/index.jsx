@@ -3,9 +3,10 @@ import "./styles.css"
 import Input from '../Input'
 import Button from '../Button'
 import { createUserWithEmailAndPassword, signInWithEmailAndPassword } from 'firebase/auth'
-import { auth } from '../../../firebase'
+import { auth, db } from '../../../firebase'
 import { toast } from 'react-toastify'
 import { useNavigate } from 'react-router-dom'
+import { doc, getDoc, setDoc } from "firebase/firestore";
 
 const SignInSignUp = () => {
     const [name, setName] = useState("")
@@ -18,7 +19,7 @@ const SignInSignUp = () => {
 
     function signupWithEmail() {
         setLoading(true)
-        if (name != "" && email.length != "" && password.length != "" && confirmPassword.length != "") {
+        if (name.length != "" && email.length != "" && password.length != "" && confirmPassword.length != "") {
             if (password == confirmPassword) {
                 createUserWithEmailAndPassword(auth, email, password)
                     .then((userCredential) => {
@@ -79,7 +80,33 @@ const SignInSignUp = () => {
         }
     }
 
-    function createDoc() { }
+    async function createDoc(user) {
+        setLoading(true)
+
+        if (!user) return;
+
+        const userRef = doc(db, "user", user.uid);
+        const userData = await getDoc(userRef);
+
+        if (!userData.exists()) {
+            try {
+                await setDoc(doc(db, "user", "new-city-id"), {
+                    name: user.displayName ? user.displayName : name,
+                    email: user.email,
+                    photoURL: user.photoURL ? user.photoURL : "",
+                    createdAt: new Date()
+                });
+                toast.success("User data created successfully")
+                setLoading(false)
+            } catch (error) {
+                toast.error(error.message)
+                setLoading(false)
+            }
+        } else {
+            toast.error("User already exists")
+            setLoading(false)
+        }
+    }
 
     return (
         <>
