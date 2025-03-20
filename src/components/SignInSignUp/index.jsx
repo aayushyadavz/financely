@@ -2,111 +2,25 @@ import React, { useState } from 'react'
 import "./styles.css"
 import Input from '../Input'
 import Button from '../Button'
-import { createUserWithEmailAndPassword, signInWithEmailAndPassword } from 'firebase/auth'
-import { auth, db } from '../../../firebase'
-import { toast } from 'react-toastify'
-import { useNavigate } from 'react-router-dom'
-import { doc, getDoc, setDoc } from "firebase/firestore";
+import useGoogleAuth from '../../hooks/useGoogleAuth'
 
 const SignInSignUp = () => {
-    const [name, setName] = useState("")
-    const [email, setEmail] = useState("")
-    const [password, setPassword] = useState("")
-    const [confirmPassword, setConfirmPassword] = useState("")
-    const [loading, setLoading] = useState(false)
+
     const [loginForm, setLoginForm] = useState(false)
-    const navigate = useNavigate()
-
-    function signupWithEmail() {
-        setLoading(true)
-        if (name.length != "" && email.length != "" && password.length != "" && confirmPassword.length != "") {
-            if (password == confirmPassword) {
-                createUserWithEmailAndPassword(auth, email, password)
-                    .then((userCredential) => {
-                        // Signed up 
-                        const user = userCredential.user;
-                        console.log(user);
-                        toast.success("Signed up successfully")
-                        setLoading(false)
-                        setName("")
-                        setEmail("")
-                        setPassword("")
-                        setConfirmPassword("")
-                        createDoc(user)
-                        navigate("/dashboard")
-                        // ...
-                    })
-                    .catch((error) => {
-                        const errorCode = error.code;
-                        const errorMessage = error.message;
-                        toast.error(errorMessage)
-                        setLoading(false)
-                        // ..
-                    });
-            } else {
-                toast.error("Passwords & Confirm Password do not match")
-                setLoading(false)
-            }
-        } else {
-            toast.error("Please fill all the fields")
-            setLoading(false)
-        }
-    }
-
-    function logInWithEmail() {
-        setLoading(true)
-        if (email.length != "" && password.length != "") {
-            signInWithEmailAndPassword(auth, email, password)
-                .then((userCredential) => {
-                    // Signed in 
-                    const user = userCredential.user;
-                    console.log(user);
-                    toast.success("Logged in successfully")
-                    setLoading(false)
-                    setEmail("")
-                    setPassword("")
-                    navigate("/dashboard")
-                    // ...
-                })
-                .catch((error) => {
-                    const errorCode = error.code;
-                    const errorMessage = error.message;
-                    toast.error(errorMessage)
-                    setLoading(false)
-                });
-        } else {
-            toast.error("Please fill all the fields")
-            setLoading(false)
-        }
-    }
-
-    async function createDoc(user) {
-        setLoading(true)
-
-        if (!user) return;
-
-        const userRef = doc(db, "user", user.uid);
-        const userData = await getDoc(userRef);
-
-        if (!userData.exists()) {
-            try {
-                await setDoc(doc(db, "user", "new-city-id"), {
-                    name: user.displayName ? user.displayName : name,
-                    email: user.email,
-                    photoURL: user.photoURL ? user.photoURL : "",
-                    createdAt: new Date()
-                });
-                toast.success("User data created successfully")
-                setLoading(false)
-            } catch (error) {
-                toast.error(error.message)
-                setLoading(false)
-            }
-        } else {
-            toast.error("User already exists")
-            setLoading(false)
-        }
-    }
+    const {
+        name,
+        email,
+        password,
+        confirmPassword,
+        setName,
+        setEmail,
+        setPassword,
+        setConfirmPassword,
+        signupWithEmail,
+        logInWithEmail,
+        googleAuth,
+        loading
+    } = useGoogleAuth()
 
     return (
         <>
@@ -119,7 +33,7 @@ const SignInSignUp = () => {
 
                         <Button text={loading ? "Loading..." : "Log In using Email and Password"} onClick={logInWithEmail} disabled={loading} />
                         <p className='p-login'>or</p>
-                        <Button text={loading ? "Loading..." : "Log In using Google"} blue={true} />
+                        <Button onClick={googleAuth} text={loading ? "Loading..." : "Log In using Google"} blue={true} />
 
                         <p className='p-login'>or Don't have an account? <span onClick={() => setLoginForm(!loginForm)}>Click Here</span></p>
                     </form>
@@ -135,7 +49,7 @@ const SignInSignUp = () => {
 
                         <Button text={loading ? "Loading..." : "Sign Up using Email and Password"} onClick={signupWithEmail} disabled={loading} />
                         <p className='p-login'>or</p>
-                        <Button text={loading ? "Loading..." : "Sign Up using Google"} blue={true} />
+                        <Button onClick={googleAuth} text={loading ? "Loading..." : "Sign Up using Google"} blue={true} />
 
                         <p className='p-login'>or Already have an account? <span onClick={() => setLoginForm(!loginForm)}>Click Here</span></p>
                     </form>
