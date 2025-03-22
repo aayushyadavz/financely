@@ -1,15 +1,27 @@
-import React from 'react'
+import React, { useEffect } from 'react'
 import "./styles.css"
+import { useAuthState } from 'react-firebase-hooks/auth';
+import { auth } from "../../../firebase"
+import { useNavigate } from 'react-router-dom';
+import useGoogleAuth from '../../hooks/useGoogleAuth';
 
 const Header = () => {
-    const logoutFnc = () => {
-        alert("You have been logged out")
-    }
+    const [user, loading] = useAuthState(auth);
+    const navigate = useNavigate()
+    const { logoutFnc } = useGoogleAuth()
+
+    useEffect(() => {
+        if (user) {
+            navigate("/dashboard")
+        }
+    }, [user, loading]);
 
     return (
         <div className='navbar'>
             <p className='logo'>Financely.</p>
-            <p className='logo link' onClick={logoutFnc}>Logout</p>
+            {user && (
+                <p className='logo link' onClick={logoutFnc}>Logout</p>
+            )}
         </div>
     )
 }

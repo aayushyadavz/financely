@@ -1,5 +1,5 @@
 import React, { useState } from 'react'
-import { createUserWithEmailAndPassword, signInWithEmailAndPassword, signInWithPopup } from 'firebase/auth'
+import { createUserWithEmailAndPassword, signInWithEmailAndPassword, signInWithPopup, signOut } from 'firebase/auth'
 import { auth, db, provider } from '../../firebase'
 import { toast } from 'react-toastify'
 import { doc, getDoc, setDoc } from "firebase/firestore";
@@ -127,6 +127,19 @@ const useGoogleAuth = () => {
         }
     }
 
+    const logoutFnc = () => {
+        try {
+            signOut(auth).then(() => {
+                toast.success("Logout Successful")
+                navigate("/")
+            }).catch((error) => {
+                toast.error(error.message)
+            });
+        } catch (error) {
+            toast.error(error.message)
+        }
+    }
+
     return {
         name,
         email,
@@ -139,7 +152,8 @@ const useGoogleAuth = () => {
         signupWithEmail,
         logInWithEmail,
         googleAuth,
-        loading
+        loading,
+        logoutFnc
     }
 }
 
