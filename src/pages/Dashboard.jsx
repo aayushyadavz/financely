@@ -1,7 +1,8 @@
 import React, { useState } from 'react'
 import Header from '../components/Header'
 import Cards from '../components/Cards'
-import { Modal } from 'antd'
+import AddIncome from '../components/Modals/AddIncome'
+import AddExpense from '../components/Modals/AddExpense'
 
 const Dashboard = () => {
     const [showIncomeModal, setShowIncomeModal] = useState(false)
@@ -28,16 +29,8 @@ const Dashboard = () => {
                 handleIncomeModal={handleIncomeModal}
                 handleExpenseModal={handleExpenseModal}
             />
-            <Modal
-                visible={showIncomeModal}
-                title="Add Income"
-                onCancel={handleCloseIncomeModal}
-            />
-            <Modal
-                visible={showExpenseModal}
-                title="Add Expense"
-                onCancel={handleCloseExpenseModal}
-            />
+            <AddIncome showIncomeModal={showIncomeModal} handleCloseIncomeModal={handleCloseIncomeModal} />
+            <AddExpense showExpenseModal={showExpenseModal} handleCloseExpenseModal={handleCloseExpenseModal} />
         </div>
     )
 }
