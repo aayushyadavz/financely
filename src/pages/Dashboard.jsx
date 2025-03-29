@@ -1,12 +1,14 @@
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import Header from '../components/Header'
 import Cards from '../components/Cards'
 import AddIncome from '../components/Modals/AddIncome'
 import AddExpense from '../components/Modals/AddExpense'
+import useGoogleFirestore from '../hooks/useGoogleFirestore'
 
 const Dashboard = () => {
     const [showIncomeModal, setShowIncomeModal] = useState(false)
     const [showExpenseModal, setShowExpenseModal] = useState(false)
+    const { loading, fetchTransactions, onFinish } = useGoogleFirestore()
 
     function handleIncomeModal() {
         setShowIncomeModal(true)
@@ -22,16 +24,35 @@ const Dashboard = () => {
         setShowExpenseModal(false)
     }
 
+    useEffect(() => {
+        fetchTransactions()
+    }, [])
+
     return (
         <div>
             <Header />
-            <Cards
-                handleIncomeModal={handleIncomeModal}
-                handleExpenseModal={handleExpenseModal}
-            />
-            <AddIncome showIncomeModal={showIncomeModal} handleCloseIncomeModal={handleCloseIncomeModal} />
-            <AddExpense showExpenseModal={showExpenseModal} handleCloseExpenseModal={handleCloseExpenseModal} />
+
+            {loading ? (<p> Loading...</p >) : (
+                <>
+                    <Cards
+                        handleIncomeModal={handleIncomeModal}
+                        handleExpenseModal={handleExpenseModal}
+                    />
+                    <AddIncome
+                        showIncomeModal={showIncomeModal}
+                        handleCloseIncomeModal={handleCloseIncomeModal}
+                        onFinish={onFinish}
+                    />
+                    <AddExpense
+                        showExpenseModal={showExpenseModal}
+                        handleCloseExpenseModal={handleCloseExpenseModal}
+                        onFinish={onFinish}
+                    />
+                </>
+            )
+            }
         </div>
+
     )
 }
 
