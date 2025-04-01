@@ -26,6 +26,8 @@ const useGoogleFirestore = () => {
         try {
             const docRef = await addDoc(collection(db, `user/${user.uid}/transactions`), transactions)
             console.log("Document written with ID: ", docRef.id);
+
+            await fetchTransactions()
             toast.success("Transaction added successfully")
         } catch (error) {
             console.error("Error adding transaction:", error)
@@ -49,7 +51,7 @@ const useGoogleFirestore = () => {
         setLoading(false)
     }
 
-    return { fetchTransactions, loading, onFinish }
+    return { fetchTransactions, loading, onFinish, transactions }
 }
 
 export default useGoogleFirestore

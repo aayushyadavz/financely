@@ -3,22 +3,22 @@ import "./styles.css"
 import { Card, Row } from 'antd'
 import Button from "../Button"
 
-const Cards = ({ handleIncomeModal, handleExpenseModal }) => {
+const Cards = ({ handleIncomeModal, handleExpenseModal, income, expense, totalBalance }) => {
     return (
         <Row className='my-row'>
             <Card className='my-card' >
                 <h2>Current Balance</h2>
-                <p>₹0</p>
+                <p>₹{totalBalance}</p>
                 <Button blue={true} text={"Reset Balance"} />
             </Card>
             <Card className='my-card' >
                 <h2>Total Income</h2>
-                <p>₹0</p>
+                <p>₹{income}</p>
                 <Button blue={true} text={"Add Income"} onClick={handleIncomeModal} />
             </Card>
             <Card className='my-card' >
                 <h2>Total Expenses</h2>
-                <p>₹0</p>
+                <p>₹{expense}</p>
                 <Button blue={true} text={"Add Expense"} onClick={handleExpenseModal} />
             </Card>
         </Row>

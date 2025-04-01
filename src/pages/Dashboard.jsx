@@ -8,7 +8,10 @@ import useGoogleFirestore from '../hooks/useGoogleFirestore'
 const Dashboard = () => {
     const [showIncomeModal, setShowIncomeModal] = useState(false)
     const [showExpenseModal, setShowExpenseModal] = useState(false)
-    const { loading, fetchTransactions, onFinish } = useGoogleFirestore()
+    const { loading, fetchTransactions, onFinish, transactions } = useGoogleFirestore()
+    const [income, setIncome] = useState(0)
+    const [expense, setExpense] = useState(0)
+    const [totalBalance, setTotalBalance] = useState(0)
 
     function handleIncomeModal() {
         setShowIncomeModal(true)
@@ -28,6 +31,25 @@ const Dashboard = () => {
         fetchTransactions()
     }, [])
 
+    useEffect(() => {
+        calculateTotalBalance()
+    }, [transactions])
+
+    function calculateTotalBalance() {
+        let income = 0
+        let expense = 0
+        transactions.forEach((transaction) => {
+            if (transaction.type === "income") {
+                income += transaction.amount
+            } else {
+                expense += transaction.amount
+            }
+        })
+        setIncome(income)
+        setExpense(expense)
+        setTotalBalance(income - expense)
+    }
+
     return (
         <div>
             <Header />
@@ -35,6 +57,9 @@ const Dashboard = () => {
             {loading ? (<p> Loading...</p >) : (
                 <>
                     <Cards
+                        income={income}
+                        expense={expense}
+                        totalBalance={totalBalance}
                         handleIncomeModal={handleIncomeModal}
                         handleExpenseModal={handleExpenseModal}
                     />
