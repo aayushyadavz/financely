@@ -44,7 +44,6 @@ const Dashboard = () => {
     return (
         <div>
             <Header />
-
             {loading ? (<p> Loading...</p >) : (
                 <>
                     <Cards
@@ -68,7 +67,6 @@ const Dashboard = () => {
             )
             }
         </div>
-
     )
 }
 
