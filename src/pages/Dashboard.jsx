@@ -4,6 +4,7 @@ import Cards from '../components/Cards'
 import AddIncome from '../components/Modals/AddIncome'
 import AddExpense from '../components/Modals/AddExpense'
 import useGoogleFirestore from '../hooks/useGoogleFirestore'
+import TableComponent from '../components/TableComponent'
 
 const Dashboard = () => {
     const [showIncomeModal, setShowIncomeModal] = useState(false)
@@ -15,7 +16,8 @@ const Dashboard = () => {
         calculateTotalBalance,
         income,
         expense,
-        totalBalance
+        totalBalance,
+        user
     } = useGoogleFirestore()
 
 
@@ -35,7 +37,7 @@ const Dashboard = () => {
 
     useEffect(() => {
         fetchTransactions()
-    }, [])
+    }, [user])
 
     useEffect(() => {
         calculateTotalBalance()
@@ -63,6 +65,7 @@ const Dashboard = () => {
                         handleCloseExpenseModal={handleCloseExpenseModal}
                         onFinish={onFinish}
                     />
+                    <TableComponent transactions={transactions} />
                 </>
             )
             }

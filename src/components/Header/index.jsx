@@ -20,7 +20,16 @@ const Header = () => {
         <div className='navbar'>
             <p className='logo'>Financely.</p>
             {user && (
-                <p className='logo link' onClick={logoutFnc}>Logout</p>
+                <div style={{ display: "flex", alignItems: "center", gap: "0.5rem" }}>
+                    <img
+                        src={user.photoURL ? user.photoURL : "/user.svg"}
+                        height="25px"
+                        width="25px"
+                        style={{
+                            borderRadius: "50%"
+                        }} />
+                    <p className='logo link' onClick={logoutFnc}>Logout</p>
+                </div>
             )}
         </div>
     )

@@ -1,4 +1,3 @@
-import moment from 'moment'
 import { toast } from 'react-toastify'
 import { addDoc, collection, getDocs, query } from 'firebase/firestore'
 import { auth, db } from '../../firebase'
@@ -19,7 +18,7 @@ const useGoogleFirestore = () => {
             name: values.name,
             tag: values.tag,
             amount: parseFloat(values.amount),
-            date: moment(values.date).format('YYYY-MM-DD'),
+            date: values.date.format("YYYY-MM-DD"),
         }
         addTransactions(transactions)
     }
@@ -78,7 +77,8 @@ const useGoogleFirestore = () => {
         calculateTotalBalance,
         income,
         expense,
-        totalBalance
+        totalBalance,
+        user
     }
 }
 
