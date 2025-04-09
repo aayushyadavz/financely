@@ -17,7 +17,8 @@ const Dashboard = () => {
         income,
         expense,
         totalBalance,
-        user
+        user,
+        addTransactions
     } = useGoogleFirestore()
 
 
@@ -65,7 +66,11 @@ const Dashboard = () => {
                         handleCloseExpenseModal={handleCloseExpenseModal}
                         onFinish={onFinish}
                     />
-                    <TableComponent transactions={transactions} />
+                    <TableComponent
+                        transactions={transactions}
+                        fetchTransactions={fetchTransactions}
+                        addTransactions={addTransactions}
+                    />
                 </>
             )
             }

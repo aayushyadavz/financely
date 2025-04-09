@@ -23,7 +23,7 @@ const useGoogleFirestore = () => {
         addTransactions(transactions)
     }
 
-    async function addTransactions(transaction) {
+    async function addTransactions(transaction, many) {
         try {
             const docRef = await addDoc(collection(db, `user/${user.uid}/transactions`), transaction)
             console.log("Document written with ID: ", docRef.id);
@@ -31,10 +31,10 @@ const useGoogleFirestore = () => {
             newArr.push(transaction)
             setTransactions(newArr)
             calculateTotalBalance()
-            toast.success("Transaction added successfully")
+            if (!many) toast.success("Transaction added successfully")
         } catch (error) {
             console.error("Error adding transaction:", error)
-            toast.error("Error adding transaction")
+            if (!many) toast.error("Error adding transaction")
         }
     }
 
@@ -78,7 +78,8 @@ const useGoogleFirestore = () => {
         income,
         expense,
         totalBalance,
-        user
+        user,
+        addTransactions
     }
 }
 

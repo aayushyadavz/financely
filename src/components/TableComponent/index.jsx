@@ -2,9 +2,10 @@ import React from 'react'
 import './styles.css'
 import { Radio, Select, Table } from 'antd';
 import { useState } from 'react';
-import { unparse } from 'papaparse';
+import { parse, unparse } from 'papaparse';
+import { toast } from 'react-toastify';
 
-const TableComponent = ({ transactions }) => {
+const TableComponent = ({ transactions, addTransactions, fetchTransactions }) => {
     const { Option } = Select
     const [search, setSearch] = useState('')
     const [typeFilter, setTypeFilter] = useState('')
@@ -53,8 +54,8 @@ const TableComponent = ({ transactions }) => {
 
     function exportToCsv() {
         var csv = unparse({
-            fields: ["Name", "Amount", "Tag", "Type", "Date"],
-            data: transactions
+            fields: ["name", "type", "tag", "date", "amount"],
+            data: transactions,
         });
         const blob = new Blob([csv], { type: "text/csv;charset=utf-8;" });
         const url = URL.createObjectURL(blob);
@@ -64,6 +65,32 @@ const TableComponent = ({ transactions }) => {
         document.body.appendChild(link);
         link.click();
         document.body.removeChild(link);
+    }
+
+    function importFromCsv(event) {
+        event.preventDefault();
+        try {
+            parse(event.target.files[0], {
+                header: true,
+                complete: async function (results) {
+                    // Now results.data is an array of objects representing your CSV rows
+                    for (const transaction of results.data) {
+                        // Write each transaction to Firebase, you can use the addTransaction function here
+                        console.log("Transactions", transaction);
+                        const newTransaction = {
+                            ...transaction,
+                            amount: parseInt(transaction.amount),
+                        };
+                        await addTransactions(newTransaction, true);
+                    }
+                },
+            });
+            toast.success("All Transactions Added");
+            fetchTransactions();
+            event.target.files = null;
+        } catch (e) {
+            toast.error(e.message);
+        }
     }
 
     return (
@@ -144,7 +171,7 @@ const TableComponent = ({ transactions }) => {
                                 Import from CSV
                             </label>
                             <input
-                                // onChange={importFromCsv}
+                                onChange={importFromCsv}
                                 id="file-csv"
                                 type="file"
                                 accept=".csv"
