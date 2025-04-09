@@ -2,6 +2,7 @@ import React from 'react'
 import './styles.css'
 import { Radio, Select, Table } from 'antd';
 import { useState } from 'react';
+import { unparse } from 'papaparse';
 
 const TableComponent = ({ transactions }) => {
     const { Option } = Select
@@ -49,6 +50,21 @@ const TableComponent = ({ transactions }) => {
         }
         return 0
     })
+
+    function exportToCsv() {
+        var csv = unparse({
+            fields: ["Name", "Amount", "Tag", "Type", "Date"],
+            data: transactions
+        });
+        const blob = new Blob([csv], { type: "text/csv;charset=utf-8;" });
+        const url = URL.createObjectURL(blob);
+        const link = document.createElement("a");
+        link.href = url;
+        link.download = "transactions.csv";
+        document.body.appendChild(link);
+        link.click();
+        document.body.removeChild(link);
+    }
 
     return (
         <>
@@ -120,7 +136,7 @@ const TableComponent = ({ transactions }) => {
                         >
                             <button
                                 className="btn"
-                            // onClick={exportToCsv}
+                                onClick={exportToCsv}
                             >
                                 Export to CSV
                             </button>
