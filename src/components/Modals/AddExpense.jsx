@@ -71,6 +71,8 @@ function AddExpense({ showExpenseModal, handleCloseExpenseModal, onFinish, }) {
                         <Select.Option value="food">Food</Select.Option>
                         <Select.Option value="education">Education</Select.Option>
                         <Select.Option value="office">Office</Select.Option>
+                        <Select.Option value="booking">Booking</Select.Option>
+                        <Select.Option value="travelling">Travelling</Select.Option>
                     </Select>
                 </Form.Item>
                 <Form.Item>
