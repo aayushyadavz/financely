@@ -5,6 +5,8 @@ import AddIncome from '../components/Modals/AddIncome'
 import AddExpense from '../components/Modals/AddExpense'
 import useGoogleFirestore from '../hooks/useGoogleFirestore'
 import TableComponent from '../components/TableComponent'
+import ChartComponent from '../components/ChartComponent'
+import NoTransaction from '../components/NoTransaction'
 
 const Dashboard = () => {
     const [showIncomeModal, setShowIncomeModal] = useState(false)
@@ -44,6 +46,10 @@ const Dashboard = () => {
         calculateTotalBalance()
     }, [transactions])
 
+    const sortedTrannsactions = transactions.sort((a, b) => {
+        return new Date(b.date) - new Date(a.date)
+    })
+
     return (
         <div>
             <Header />
@@ -66,6 +72,7 @@ const Dashboard = () => {
                         handleCloseExpenseModal={handleCloseExpenseModal}
                         onFinish={onFinish}
                     />
+                    {transactions.length !== 0 ? <ChartComponent sortedTrannsactions={sortedTrannsactions} /> : <NoTransaction />}
                     <TableComponent
                         transactions={transactions}
                         fetchTransactions={fetchTransactions}
